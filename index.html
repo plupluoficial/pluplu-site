@@ -54,7 +54,7 @@
 
   *{margin:0;padding:0;box-sizing:border-box;}
 
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth; overflow-x:hidden; width:100%;}
 
   body{
     font-family:'Plus Jakarta Sans', sans-serif;
@@ -62,6 +62,8 @@
     background:var(--cream);
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    width:100%;
   }
 
   h1,h2,h3,.brand{
@@ -244,6 +246,11 @@
     width:100%;
     max-width:440px;
     filter:drop-shadow(0 30px 50px rgba(20,6,46,0.45));
+    animation:float-mascot 4s ease-in-out infinite;
+  }
+  @keyframes float-mascot{
+    0%, 100%{transform:translateY(0) rotate(0deg);}
+    50%{transform:translateY(-18px) rotate(-2deg);}
   }
 
   .hero-stats{
@@ -370,10 +377,143 @@
   .products .section-head p{color:var(--white);}
   .products .section-head p{color:#C7B6EE;}
 
-  .product-grid{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:28px;
+  .product-carousel{
+    position:relative;
+    width:100vw;
+    max-width:100vw;
+    left:50%;
+    right:50%;
+    margin-left:-50vw;
+    margin-right:-50vw;
+    padding:0 60px;
+    box-sizing:border-box;
+    perspective:2200px;
+  }
+
+  .carousel-title{
+    text-align:center;
+    color:var(--white);
+    font-size:26px;
+    margin-bottom:18px;
+    min-height:34px;
+    transition:opacity .3s ease;
+  }
+  .carousel-title span{
+    color:var(--orange);
+  }
+
+  .carousel-track{
+    position:relative;
+    min-height:820px;
+    transition:min-height .4s ease;
+  }
+
+  .carousel-slide{
+    position:absolute;
+    top:0;
+    left:50%;
+    width:560px;
+    transition:transform .7s cubic-bezier(.34,1.2,.32,1), opacity .7s ease, filter .7s ease;
+  }
+  .carousel-slide.slot-center{
+    transform:translateX(-50%) scale(1) rotateY(0deg);
+    opacity:1;
+    z-index:5;
+    filter:none;
+    cursor:default;
+  }
+  .carousel-slide.slot-left{
+    transform:translateX(calc(-50% - 480px)) scale(.82) rotateY(24deg);
+    opacity:.55;
+    z-index:3;
+    filter:brightness(.65);
+    cursor:pointer;
+  }
+  .carousel-slide.slot-right{
+    transform:translateX(calc(-50% + 480px)) scale(.82) rotateY(-24deg);
+    opacity:.55;
+    z-index:3;
+    filter:brightness(.65);
+    cursor:pointer;
+  }
+  .carousel-slide.slot-left:hover,
+  .carousel-slide.slot-right:hover{
+    opacity:.8;
+  }
+  .carousel-slide.slot-left .buy-actions,
+  .carousel-slide.slot-right .buy-actions{
+    pointer-events:none;
+  }
+
+  .carousel-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:var(--surface);
+    border:1px solid var(--form-border);
+    color:var(--purple-bright);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:6;
+    box-shadow:0 10px 26px rgba(0,0,0,0.35);
+    transition:background .15s ease, transform .15s ease, box-shadow .15s ease;
+  }
+  .carousel-arrow:hover{background:var(--purple-bright); color:var(--white); transform:translateY(-50%) scale(1.1); box-shadow:0 14px 30px rgba(0,0,0,0.45);}
+  .carousel-arrow.prev{left:0;}
+  .carousel-arrow.next{right:0;}
+
+  .carousel-dots{
+    display:flex;
+    justify-content:center;
+    gap:9px;
+    margin-top:28px;
+  }
+  .dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.28);
+    border:none;
+    cursor:pointer;
+    padding:0;
+    transition:background .2s ease, transform .2s ease, width .2s ease;
+  }
+  .dot.is-active{
+    background:var(--orange);
+    width:24px;
+    border-radius:5px;
+  }
+
+  @media (max-width: 1180px){
+    .product-carousel{padding:0 60px;}
+  }
+
+  @media (max-width: 900px){
+    .carousel-slide{width:280px;}
+    .carousel-slide.slot-left{transform:translateX(calc(-50% - 155px)) scale(.75) rotateY(22deg);}
+    .carousel-slide.slot-right{transform:translateX(calc(-50% + 155px)) scale(.75) rotateY(-22deg);}
+    .carousel-arrow{width:42px; height:42px;}
+    .carousel-arrow.prev{left:0;}
+    .carousel-arrow.next{right:0;}
+    .carousel-track{min-height:420px;}
+    .product-carousel{padding:0 46px;}
+    .carousel-title{font-size:21px;}
+  }
+
+  @media (max-width: 480px){
+    .carousel-slide{width:210px;}
+    .carousel-slide.slot-left{transform:translateX(calc(-50% - 118px)) scale(.7) rotateY(22deg);}
+    .carousel-slide.slot-right{transform:translateX(calc(-50% + 118px)) scale(.7) rotateY(-22deg);}
+    .carousel-track{min-height:350px;}
+    .product-body{padding:16px 16px 20px;}
+    .buy-actions{gap:6px;}
+    .buy-btn{font-size:11.5px; padding:11px 4px; gap:5px;}
+    .buy-btn svg{width:14px; height:14px;}
   }
 
   .product-glow{
@@ -413,10 +553,11 @@
   .product-gallery.slots-3{grid-template-columns:repeat(3, 1fr);}
   .product-gallery.slots-2{grid-template-columns:repeat(2, 1fr);}
   .product-gallery.slots-1{grid-template-columns:1fr;}
-  .product-gallery.slots-1 .product-image-slot{aspect-ratio:16/10;}
+  .product-gallery.slots-1 .product-image-slot{aspect-ratio:4/3.4;}
 
   .product-image-slot{
     aspect-ratio:1/1;
+    align-self:start;
     border:2px dashed #C9B8ED;
     border-radius:14px;
     display:flex;
@@ -435,15 +576,119 @@
     background:none;
     padding:0;
     overflow:hidden;
+    position:relative;
   }
   .product-image-slot.filled img{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:contain;
+    background:#0d0b14;
     transition:transform .4s ease;
   }
   .product-image-slot.filled:hover img{
     transform:scale(1.05);
+  }
+
+  .gallery-video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:4;
+    transition:opacity .8s ease;
+  }
+  .gallery-video.is-hidden{
+    opacity:0;
+    pointer-events:none;
+  }
+
+  .product-image-slot.filled img.gallery-img{
+    position:absolute;
+    inset:0;
+    opacity:0;
+    z-index:1;
+    object-fit:contain;
+    background:#0d0b14;
+    transform:scale(1.06);
+    transition:opacity 1.1s ease-in-out, transform 3.4s ease-out;
+  }
+  .product-image-slot.filled img.gallery-img.is-active{
+    opacity:1;
+    transform:scale(1);
+    z-index:2;
+  }
+
+  .gallery-dots{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    margin-top:10px;
+  }
+  .gallery-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--form-border);
+    transition:background .2s ease, width .2s ease;
+  }
+  .gallery-dot.is-active{
+    background:var(--purple-bright);
+    width:16px;
+    border-radius:4px;
+  }
+
+  .media-nav{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    background:rgba(124,58,237,0.45);
+    border:1px solid rgba(255,255,255,0.3);
+    color:var(--white);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:6;
+    opacity:.85;
+    transition:background .15s ease, opacity .15s ease;
+  }
+  .media-nav svg{width:12px; height:12px;}
+  .media-nav:hover{background:rgba(124,58,237,0.75); opacity:1;}
+  .media-nav.prev{left:8px;}
+  .media-nav.next{right:8px;}
+
+  .media-counter{
+    position:absolute;
+    bottom:12px;
+    right:12px;
+    z-index:6;
+    background:rgba(0,0,0,0.55);
+    color:var(--white);
+    font-size:12.5px;
+    font-weight:700;
+    padding:4px 11px;
+    border-radius:999px;
+  }
+
+  .bestseller-badge{
+    position:absolute;
+    top:14px;
+    left:14px;
+    z-index:7;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    background:linear-gradient(135deg, #FFE27A, #E8A93A);
+    color:#4A2E00;
+    font-weight:800;
+    font-size:12.5px;
+    padding:7px 13px;
+    border-radius:999px;
+    box-shadow:0 8px 16px rgba(0,0,0,0.35);
   }
 
   .product-body{
@@ -469,11 +714,39 @@
     font-weight:700;
     color:var(--purple-bright);
     margin-top:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .price-old{
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink-soft);
+    text-decoration:line-through;
+    order:-1;
+  }
+  .discount-badge{
+    background:#1FAE8E;
+    color:var(--white);
+    font-size:12px;
+    font-weight:800;
+    padding:3px 9px;
+    border-radius:999px;
   }
   .product-body .price small{
     font-size:13px;
     color:var(--ink-soft);
     font-weight:500;
+  }
+  .price-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .price-note-alt{
+    color:var(--purple-bright);
+    font-weight:600;
   }
 
   .buy-btn{
@@ -493,7 +766,10 @@
     font-family:'Plus Jakarta Sans', sans-serif;
     transition:background .15s ease, transform .15s ease;
     width:100%;
+    white-space:nowrap;
+    overflow:hidden;
   }
+  .buy-btn span, .buy-btn{text-overflow:ellipsis;}
   .buy-btn:hover{background:var(--orange-deep); transform:translateY(-1px);}
   .buy-btn svg{flex-shrink:0;}
 
@@ -502,12 +778,13 @@
     gap:10px;
     margin-top:18px;
   }
-  .buy-actions .buy-btn{flex:1;}
+  .buy-actions .buy-btn{flex:1; min-width:0; white-space:nowrap;}
   .buy-actions .buy-btn.buy-discord{background:var(--discord);}
   .buy-actions .buy-btn.buy-discord:hover{background:var(--discord-deep); transform:translateY(-1px);}
 
   .buy-btn-wrap{
     flex:1;
+    min-width:0;
     padding:4px;
     border-radius:16px;
     background:linear-gradient(90deg, #ff5f6d, #ffc371, #47e6b1, #3aa0ff, #a35cff, #ff5f6d);
@@ -626,6 +903,67 @@
     font-size:12.5px;
     color:var(--ink-soft);
     margin-top:14px;
+  }
+
+  /* ---------- testimonials ---------- */
+  .testimonials{
+    padding:90px 0;
+  }
+  .testimonial-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:20px;
+  }
+  .testimonial-card{
+    background:var(--surface);
+    border:1px solid var(--form-border);
+    border-radius:20px;
+    padding:26px 24px;
+  }
+  .testimonial-text{
+    color:var(--ink);
+    font-size:14.5px;
+    line-height:1.6;
+  }
+  .testimonial-author{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:16px;
+    font-weight:700;
+    font-size:14px;
+    color:var(--purple-bright);
+  }
+  .testimonial-avatar{
+    width:36px;
+    height:36px;
+    border-radius:11px;
+    color:var(--white);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Baloo 2', sans-serif;
+    font-size:15px;
+    flex-shrink:0;
+    box-shadow:0 4px 10px rgba(0,0,0,0.28);
+  }
+  .testimonial-avatar.avatar-a{background:var(--orange-deep); transform:rotate(-5deg);}
+  .testimonial-avatar.avatar-b{background:var(--discord); transform:rotate(4deg);}
+  .testimonial-avatar.avatar-c{background:var(--purple-bright); transform:rotate(-3deg);}
+  .testimonial-avatar.avatar-d{background:#1FAE8E; transform:rotate(5deg);}
+  .testimonial-cta{
+    text-align:center;
+    margin-top:32px;
+    font-size:15px;
+    color:var(--ink-soft);
+  }
+  .testimonial-cta a{
+    color:var(--purple-bright);
+    font-weight:700;
+    text-decoration:underline;
+  }
+  @media (max-width: 900px){
+    .testimonial-grid{grid-template-columns:1fr;}
   }
 
   /* ---------- trust row ---------- */
@@ -801,7 +1139,6 @@
     .hero-stats{gap:28px; flex-wrap:wrap;}
     .how-grid{grid-template-columns:1fr; gap:40px;}
     .how-item{border-left:none !important; padding:0;}
-    .product-grid{grid-template-columns:1fr; gap:22px;}
     .trust .wrap{grid-template-columns:1fr;}
     .trust-art{order:-1;}
     .contact-box{flex-direction:column; align-items:flex-start; padding:40px 28px;}
@@ -813,6 +1150,10 @@
     .wrap{padding:0 20px;}
     .hero h1{font-size:32px;}
     .contact-email{font-size:14px; padding:14px 18px;}
+    .nav{padding:16px 20px;}
+    .nav-cta{padding:9px 16px; font-size:13px;}
+    .theme-toggle{width:36px; height:36px;}
+    .nav-actions{gap:10px;}
   }
 </style>
 </head>
@@ -841,14 +1182,14 @@
     <div class="hero-copy">
       <span class="hero-eyebrow">Loja digital</span>
       <h1>Compre com confiança e sem complicação</h1>
-      <p>Produtos digitais revisados com cuidado, com entrega em até 4 dias. Escolha o que precisa e pronto.</p>
+      <p>Produtos digitais revisados com cuidado, com entrega em até 3 dias, válido para todos os produtos. Escolha o que precisa e pronto.</p>
       <div class="hero-actions">
         <a href="#produtos" class="btn-primary">Ver produtos</a>
         <a href="#como-funciona" class="btn-ghost">Como funciona</a>
       </div>
       <div class="hero-stats">
         <div><strong id="stat-percent" data-target="100" data-prefix="" data-suffix="%">0%</strong><span>entrega digital</span></div>
-        <div><strong id="stat-days" data-target="4" data-prefix="Até " data-suffix=" dias">Até 0 dias</strong><span>prazo de entrega</span></div>
+        <div><strong id="stat-days" data-target="3" data-prefix="Até " data-suffix=" dias">Até 0 dias</strong><span>prazo de entrega</span></div>
         <div><strong>Suporte</strong><span>por e-mail e Discord</span></div>
       </div>
     </div>
@@ -869,7 +1210,7 @@
         <div class="how-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg>
         </div>
-        <h3>Serviços completos e revisados cuidadosamente</h3>
+        <h3>Serviços completos,Apostilas plurall e simulados revisados cuidadosamente</h3>
         <p>Cada entrega passa por uma revisão cuidadosa antes de chegar até você.</p>
       </div>
       <div class="how-item">
@@ -879,8 +1220,8 @@
       </div>
       <div class="how-item">
         <img src="speed-mascot.png" alt="">
-        <h3>Entrega em até 4 dias</h3>
-        <p>Prazo máximo de 4 dias para você receber o que comprou.</p>
+        <h3>Entrega em até 3 dias</h3>
+        <p>Prazo máximo de 3 dias para você receber o que comprou.</p>
       </div>
       <div class="how-item">
         <div class="icon-group">
@@ -903,104 +1244,143 @@
     <div class="section-head">
       <h2>Nossos produtos</h2>
     </div>
-    <div class="product-grid">
 
-      <div class="product-glow">
-      <div class="product-card">
-        <div class="product-gallery slots-1">
-          <div class="product-image-slot filled">
-            <img src="produto1-imagem1.png" alt="Imagem do Apostila completa">
-          </div>
-        </div>
-        <div class="product-body">
-          <span class="tag">Produto digital</span>
-          <h3>Apostila completa</h3>
-          <div class="price">R$ 40,00 <small>à vista</small></div>
-          <div class="buy-actions">
-            <div class="buy-btn-wrap">
-            <button type="button" class="buy-btn" onclick="escolherContato('Apostila completa','email')">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
-              E-mail
-            </button>
-            </div>
-            <div class="buy-btn-wrap">
-            <button type="button" class="buy-btn buy-discord" onclick="escolherContato('Apostila completa','discord')">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 15.885 3c-.211.375-.444.879-.608 1.278a18.27 18.27 0 0 0-5.487 0A12.6 12.6 0 0 0 9.182 3a19.74 19.74 0 0 0-4.435 1.369C1.46 9.043.678 13.58.973 18.057a19.9 19.9 0 0 0 5.993 3.03c.483-.657.913-1.354 1.284-2.089a12.9 12.9 0 0 1-2.023-.97c.17-.124.336-.253.497-.386 3.9 1.804 8.126 1.804 11.98 0 .163.133.329.262.497.386-.645.386-1.323.71-2.027.973.372.734.8 1.431 1.284 2.088a19.84 19.84 0 0 0 6-3.03c.346-5.194-.579-9.688-2.14-13.688ZM8.68 15.33c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.94 2.42-2.13 2.42Zm6.649 0c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.932 2.42-2.13 2.42Z"/></svg>
-              Discord
-            </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
+    <div class="product-carousel" id="productCarousel">
+      <h3 class="carousel-title" id="carouselTitle">Você está vendo: <span>Apostila completa</span></h3>
+      <button type="button" class="carousel-arrow prev" onclick="mudarProduto(-1)" aria-label="Produto anterior">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
 
-      <div class="product-glow">
-      <div class="product-card">
-        <div class="product-gallery slots-1">
-          <div class="product-image-slot filled">
-            <img src="produto2-imagem1.png" alt="Imagem do Simulado online">
+      <div class="carousel-track">
+
+        <div class="carousel-slide slot-center" data-index="0" data-name="Apostila completa" onclick="irParaProdutoSeLateral(0)">
+        <div class="product-glow">
+        <div class="product-card">
+          <div class="product-gallery slots-1">
+            <div class="product-image-slot filled" id="produto1-midia">
+              <span class="bestseller-badge">🏅 Mais vendido</span>
+              <video class="gallery-video" id="produto1Video" src="produto1-video.mp4" poster="produto1-imagem1.png" muted playsinline></video>
+              <img class="gallery-img" data-img-index="0" src="produto1-imagem1.png" alt="Imagem da Apostila completa">
+              <img class="gallery-img" data-img-index="1" src="produto1-imagem2.png" alt="Exemplo de questão resolvida da Apostila completa">
+              <button type="button" class="media-nav prev" id="produto1MediaPrev" aria-label="Mídia anterior">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button type="button" class="media-nav next" id="produto1MediaNext" aria-label="Próxima mídia">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+              <span class="media-counter" id="produto1Counter">1 / 3</span>
+            </div>
           </div>
-        </div>
-        <div class="product-body">
-          <div class="tag-row">
+          <div class="product-body">
             <span class="tag">Produto digital</span>
-            <span class="tag-urgent">⚡ Integrado em até 5h</span>
-          </div>
-          <h3>Simulado online</h3>
-          <div class="price">R$ 25,00 <small>à vista</small></div>
-          <div class="buy-actions">
-            <div class="buy-btn-wrap">
-            <button type="button" class="buy-btn" onclick="escolherContato('Simulado online','email')">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
-              E-mail
-            </button>
+            <h3>Apostila completa</h3>
+            <div class="price">
+              <span class="price-old">R$ 40,00</span>
+              R$ 15,00 <small>à vista</small>
+              <span class="discount-badge">-62,5%</span>
             </div>
-            <div class="buy-btn-wrap">
-            <button type="button" class="buy-btn buy-discord" onclick="escolherContato('Simulado online','discord')">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 15.885 3c-.211.375-.444.879-.608 1.278a18.27 18.27 0 0 0-5.487 0A12.6 12.6 0 0 0 9.182 3a19.74 19.74 0 0 0-4.435 1.369C1.46 9.043.678 13.58.973 18.057a19.9 19.9 0 0 0 5.993 3.03c.483-.657.913-1.354 1.284-2.089a12.9 12.9 0 0 1-2.023-.97c.17-.124.336-.253.497-.386 3.9 1.804 8.126 1.804 11.98 0 .163.133.329.262.497.386-.645.386-1.323.71-2.027.973.372.734.8 1.431 1.284 2.088a19.84 19.84 0 0 0 6-3.03c.346-5.194-.579-9.688-2.14-13.688ZM8.68 15.33c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.94 2.42-2.13 2.42Zm6.649 0c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.932 2.42-2.13 2.42Z"/></svg>
-              Discord
-            </button>
+            <p class="price-note">Saindo a R$ 1,07 por matéria nessa promoção</p>
+            <p class="price-note price-note-alt">Também vendemos por matéria separada: R$ 7,50 cada</p>
+            <div class="buy-actions">
+              <div class="buy-btn-wrap">
+              <button type="button" class="buy-btn" onclick="escolherContato('Apostila completa','email')">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+                E-mail
+              </button>
+              </div>
+              <div class="buy-btn-wrap">
+              <button type="button" class="buy-btn buy-discord" onclick="escolherContato('Apostila completa','discord')">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 15.885 3c-.211.375-.444.879-.608 1.278a18.27 18.27 0 0 0-5.487 0A12.6 12.6 0 0 0 9.182 3a19.74 19.74 0 0 0-4.435 1.369C1.46 9.043.678 13.58.973 18.057a19.9 19.9 0 0 0 5.993 3.03c.483-.657.913-1.354 1.284-2.089a12.9 12.9 0 0 1-2.023-.97c.17-.124.336-.253.497-.386 3.9 1.804 8.126 1.804 11.98 0 .163.133.329.262.497.386-.645.386-1.323.71-2.027.973.372.734.8 1.431 1.284 2.088a19.84 19.84 0 0 0 6-3.03c.346-5.194-.579-9.688-2.14-13.688ZM8.68 15.33c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.94 2.42-2.13 2.42Zm6.649 0c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.932 2.42-2.13 2.42Z"/></svg>
+                Discord
+              </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        </div>
+        </div>
+
+        <div class="carousel-slide slot-right" data-index="1" data-name="Matéria separada" onclick="irParaProdutoSeLateral(1)">
+        <div class="product-glow">
+        <div class="product-card">
+          <div class="product-gallery slots-1">
+            <div class="product-image-slot filled">
+              <img src="produto3-materias-v2.png" alt="Escolha suas matérias — Matéria separada">
+            </div>
+          </div>
+          <div class="product-body">
+            <span class="tag">Produto digital</span>
+            <h3>Matéria separada</h3>
+            <div class="price">R$ 7,50 <small>por matéria</small></div>
+            <p class="price-note">Escolha sua matéria</p>
+            <div class="buy-actions">
+              <div class="buy-btn-wrap">
+              <button type="button" class="buy-btn" onclick="escolherContato('Matéria separada','email')">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+                E-mail
+              </button>
+              </div>
+              <div class="buy-btn-wrap">
+              <button type="button" class="buy-btn buy-discord" onclick="escolherContato('Matéria separada','discord')">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 15.885 3c-.211.375-.444.879-.608 1.278a18.27 18.27 0 0 0-5.487 0A12.6 12.6 0 0 0 9.182 3a19.74 19.74 0 0 0-4.435 1.369C1.46 9.043.678 13.58.973 18.057a19.9 19.9 0 0 0 5.993 3.03c.483-.657.913-1.354 1.284-2.089a12.9 12.9 0 0 1-2.023-.97c.17-.124.336-.253.497-.386 3.9 1.804 8.126 1.804 11.98 0 .163.133.329.262.497.386-.645.386-1.323.71-2.027.973.372.734.8 1.431 1.284 2.088a19.84 19.84 0 0 0 6-3.03c.346-5.194-.579-9.688-2.14-13.688ZM8.68 15.33c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.94 2.42-2.13 2.42Zm6.649 0c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.932 2.42-2.13 2.42Z"/></svg>
+                Discord
+              </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="carousel-slide slot-left" data-index="2" data-name="Simulado online" onclick="irParaProdutoSeLateral(2)">
+        <div class="product-glow">
+        <div class="product-card">
+          <div class="product-gallery slots-1">
+            <div class="product-image-slot filled">
+              <img src="produto2-imagem1.png" alt="Imagem do Simulado online">
+            </div>
+          </div>
+          <div class="product-body">
+            <div class="tag-row">
+              <span class="tag">Produto digital</span>
+              <span class="tag-urgent">⚡ Integrado em até 5h</span>
+            </div>
+            <h3>Simulado online</h3>
+            <div class="price">R$ 20,00 <small>à vista</small></div>
+            <div class="buy-actions">
+              <div class="buy-btn-wrap">
+              <button type="button" class="buy-btn" onclick="escolherContato('Simulado online','email')">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+                E-mail
+              </button>
+              </div>
+              <div class="buy-btn-wrap">
+              <button type="button" class="buy-btn buy-discord" onclick="escolherContato('Simulado online','discord')">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 15.885 3c-.211.375-.444.879-.608 1.278a18.27 18.27 0 0 0-5.487 0A12.6 12.6 0 0 0 9.182 3a19.74 19.74 0 0 0-4.435 1.369C1.46 9.043.678 13.58.973 18.057a19.9 19.9 0 0 0 5.993 3.03c.483-.657.913-1.354 1.284-2.089a12.9 12.9 0 0 1-2.023-.97c.17-.124.336-.253.497-.386 3.9 1.804 8.126 1.804 11.98 0 .163.133.329.262.497.386-.645.386-1.323.71-2.027.973.372.734.8 1.431 1.284 2.088a19.84 19.84 0 0 0 6-3.03c.346-5.194-.579-9.688-2.14-13.688ZM8.68 15.33c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.94 2.42-2.13 2.42Zm6.649 0c-1.17 0-2.13-1.083-2.13-2.42 0-1.336.94-2.42 2.13-2.42 1.199 0 2.15 1.093 2.13 2.42 0 1.337-.932 2.42-2.13 2.42Z"/></svg>
+                Discord
+              </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        </div>
+
       </div>
 
+      <button type="button" class="carousel-arrow next" onclick="mudarProduto(1)" aria-label="Próximo produto">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="carousel-dots">
+      <button type="button" class="dot is-active" data-index="0" onclick="irParaProduto(0)" aria-label="Ver a Apostila completa"></button>
+      <button type="button" class="dot" data-index="1" onclick="irParaProduto(1)" aria-label="Ver Matéria separada"></button>
+      <button type="button" class="dot" data-index="2" onclick="irParaProduto(2)" aria-label="Ver Simulado online"></button>
     </div>
   </div>
 </section>
 
-<section class="fill-form" id="preencha-formulario">
-  <div class="wrap">
-    <div class="fill-form-box">
-      <span class="form-eyebrow">Finalize sua compra</span>
-      <h2>Preencha as informações abaixo caso queira combinar pelo e-mail</h2>
-      <p>Complete os campos a seguir antes de finalizar.todos os campos não são obrigatórios.</p>
-      <div id="selected-product-banner" class="selected-product-banner is-empty">Selecione um produto acima para liberar o formulário</div>
-      <form id="feedback-form">
-        <input type="hidden" id="produtoEscolhido" name="produto" value="">
-        <div class="fill-bar">
-          <span class="fill-label">Nome completo</span>
-          <input type="text" class="fill-input" id="campo1" name="campo1" disabled>
-        </div>
-        <div class="fill-bar">
-          <span class="fill-label">Ano/série</span>
-          <input type="text" class="fill-input" id="campo2" name="campo2" disabled>
-        </div>
-        <div class="fill-bar">
-          <span class="fill-label">Login</span>
-          <input type="text" class="fill-input" id="campo3" name="campo3" disabled>
-        </div>
-        <div class="fill-bar">
-          <span class="fill-label">Senha</span>
-          <input type="text" class="fill-input" id="campo4" name="campo4" disabled>
-        </div>
-        <button type="submit" class="fill-submit" id="botaoEnviar" disabled>Enviar</button>
-        <p class="fill-note">Ao enviar, seu aplicativo de e-mail abrirá com as respostas já preenchidas.</p>
-      </form>
-    </div>
-  </div>
-</section>
 
 <section class="trust">
   <div class="wrap">
@@ -1014,6 +1394,10 @@
         <li>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
           Entrega em até 4 dias após a confirmação do pagamento
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
+          Alunos do 2º ou 3º ano do ensino médio têm prioridade, com entrega em até 2 dias
         </li>
         <li>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
@@ -1039,7 +1423,83 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
           Reembolso garantido caso a nossa parte não seja cumprida
         </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
+          Já ajudamos muitos alunos com nossos produtos — <a href="https://discord.gg/wKPVZZ29G" target="_blank" rel="noopener" style="color:var(--purple-bright); font-weight:700;">veja as avaliações no nosso Discord</a>
+        </li>
       </ul>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials" id="avaliacoes">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>O que nossos alunos dizem</h2>
+      <p>Depoimentos reais direto do nosso servidor do Discord.</p>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <p class="testimonial-text">"Comprei a apostila completa do pluplu oficial e cara, que serviço bom! No mesmo dia eles me entregaram a apostila toda completa, incluindo as questões abertas de forma correta. Agora só compro com eles, recomendo muito, 10/10."</p>
+        <div class="testimonial-author">
+          <span class="testimonial-avatar avatar-a">S</span>
+          <span>Samuel</span>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">"Galera, pode comprar, recomendo demais. Em menos de 2 dias os caras fizeram toda a minha apostila, melhor serviço que tem. Já compro com eles há mais de 1 ano e nunca me deram dor de cabeça."</p>
+        <div class="testimonial-author">
+          <span class="testimonial-avatar avatar-b">X</span>
+          <span>I am xiter</span>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">"Rapaziada, pode comprar. Em menos de 2 dias úteis os caras fizeram toda minha apostila. Já compro com eles tem 2 anos e nunca falharam, sempre entregou na data certa."</p>
+        <div class="testimonial-author">
+          <span class="testimonial-avatar avatar-c">G</span>
+          <span>Gabriel</span>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">"Recomendo demais o serviço deles, melhor gasto que eu já fiz. Fizeram tudo certinho, inclusive as questões abertas, entregaram até antes do prazo. Atendimento perfeito, podem confiar."</p>
+        <div class="testimonial-author">
+          <span class="testimonial-avatar avatar-d">Y</span>
+          <span>Yighin</span>
+        </div>
+      </div>
+    </div>
+    <p class="testimonial-cta">Quer ver mais? <a href="https://discord.gg/wKPVZZ29G" target="_blank" rel="noopener">Confira todas as avaliações no nosso Discord</a></p>
+  </div>
+</section>
+
+<section class="fill-form" id="preencha-formulario">
+  <div class="wrap">
+    <div class="fill-form-box">
+      <span class="form-eyebrow">Finalize sua compra</span>
+      <h2>Preencha as informações abaixo caso queira combinar pelo e-mail</h2>
+      <p>Complete os campos a seguir antes de finalizar.todos os campos são obrigatórios.</p>
+      <div id="selected-product-banner" class="selected-product-banner is-empty">Selecione um produto acima para liberar o formulário</div>
+      <form id="feedback-form">
+        <input type="hidden" id="produtoEscolhido" name="produto" value="">
+        <div class="fill-bar">
+          <span class="fill-label">Nome completo</span>
+          <input type="text" class="fill-input" id="campo1" name="campo1" disabled>
+        </div>
+        <div class="fill-bar">
+          <span class="fill-label">Ano/série</span>
+          <input type="text" class="fill-input" id="campo2" name="campo2" disabled>
+        </div>
+        <div class="fill-bar">
+          <span class="fill-label">Login do plurall</span>
+          <input type="text" class="fill-input" id="campo3" name="campo3" disabled>
+        </div>
+        <div class="fill-bar">
+          <span class="fill-label">Senha do plurall</span>
+          <input type="text" class="fill-input" id="campo4" name="campo4" disabled>
+        </div>
+        <button type="submit" class="fill-submit" id="botaoEnviar" disabled>Enviar</button>
+        <p class="fill-note">Ao enviar, seu aplicativo de e-mail abrirá com as respostas já preenchidas.</p>
+      </form>
     </div>
   </div>
 </section>
@@ -1079,6 +1539,167 @@
 </footer>
 
 <script>
+  var carouselIndex = 0;
+  var carouselTotal = 3;
+
+  function atualizarCarrossel(){
+    var slides = document.querySelectorAll('.carousel-slide');
+    slides.forEach(function(slide){
+      var i = parseInt(slide.getAttribute('data-index'), 10);
+      var diff = (i - carouselIndex + carouselTotal) % carouselTotal;
+      slide.classList.remove('slot-center', 'slot-left', 'slot-right');
+      if(diff === 0){
+        slide.classList.add('slot-center');
+      } else if(diff === 1){
+        slide.classList.add('slot-right');
+      } else {
+        slide.classList.add('slot-left');
+      }
+    });
+
+    var dots = document.querySelectorAll('.dot');
+    dots.forEach(function(dot){
+      var i = parseInt(dot.getAttribute('data-index'), 10);
+      dot.classList.toggle('is-active', i === carouselIndex);
+    });
+
+    var ativoTitulo = document.querySelector('.carousel-slide.slot-center');
+    var tituloEl = document.getElementById('carouselTitle');
+    if(ativoTitulo && tituloEl){
+      tituloEl.innerHTML = 'Você está vendo: <span>' + ativoTitulo.getAttribute('data-name') + '</span>';
+    }
+
+    ajustarAlturaCarrossel();
+  }
+
+  function mudarProduto(delta){
+    carouselIndex = (carouselIndex + delta + carouselTotal) % carouselTotal;
+    atualizarCarrossel();
+  }
+
+  function irParaProduto(i){
+    carouselIndex = i;
+    atualizarCarrossel();
+  }
+
+  function irParaProdutoSeLateral(i){
+    if(i !== carouselIndex){
+      irParaProduto(i);
+    }
+  }
+
+  function ajustarAlturaCarrossel(){
+    var ativo = document.querySelector('.carousel-slide.slot-center');
+    var track = document.querySelector('.carousel-track');
+    if(ativo && track){
+      track.style.minHeight = ativo.offsetHeight + 'px';
+    }
+  }
+
+  window.addEventListener('load', ajustarAlturaCarrossel);
+  window.addEventListener('resize', ajustarAlturaCarrossel);
+  document.addEventListener('DOMContentLoaded', atualizarCarrossel);
+
+  function iniciarGaleriasAutomaticas(){
+    document.querySelectorAll('.product-image-slot').forEach(function(slot){
+      if(slot.querySelector('.gallery-video')){ return; }
+      var imagens = slot.querySelectorAll('.gallery-img');
+      if(imagens.length <= 1){ return; }
+      var dotsContainer = slot.parentElement.querySelector('.gallery-dots');
+      var pontos = dotsContainer ? dotsContainer.querySelectorAll('.gallery-dot') : [];
+      var indiceAtual = 0;
+      setInterval(function(){
+        imagens[indiceAtual].classList.remove('is-active');
+        if(pontos[indiceAtual]){ pontos[indiceAtual].classList.remove('is-active'); }
+        indiceAtual = (indiceAtual + 1) % imagens.length;
+        imagens[indiceAtual].classList.add('is-active');
+        if(pontos[indiceAtual]){ pontos[indiceAtual].classList.add('is-active'); }
+      }, 3200);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', iniciarGaleriasAutomaticas);
+
+  function iniciarMidiaProduto1(){
+    var video = document.getElementById('produto1Video');
+    if(!video){ return; }
+    var slot = document.getElementById('produto1-midia');
+    var imagens = document.querySelectorAll('#produto1-midia .gallery-img');
+    var contador = document.getElementById('produto1Counter');
+    var botaoPrev = document.getElementById('produto1MediaPrev');
+    var botaoNext = document.getElementById('produto1MediaNext');
+    var totalMidias = 1 + imagens.length;
+    var indiceMidia = 0;
+    var timerImagem = null;
+    var DURACAO_IMAGEM = 4200;
+
+    function mostrarMidia(indice){
+      indiceMidia = indice;
+
+      if(timerImagem){
+        clearTimeout(timerImagem);
+        timerImagem = null;
+      }
+
+      if(indice === 0){
+        video.classList.remove('is-hidden');
+        video.currentTime = 0;
+        video.play().catch(function(){});
+      } else {
+        video.classList.add('is-hidden');
+        video.pause();
+        timerImagem = setTimeout(irProximaMidia, DURACAO_IMAGEM);
+      }
+
+      imagens.forEach(function(img, i){
+        img.classList.toggle('is-active', indice === i + 1);
+      });
+
+      if(contador){
+        contador.textContent = (indice + 1) + ' / ' + totalMidias;
+      }
+    }
+
+    function irProximaMidia(){
+      mostrarMidia((indiceMidia + 1) % totalMidias);
+    }
+
+    function irMidiaAnterior(){
+      mostrarMidia((indiceMidia - 1 + totalMidias) % totalMidias);
+    }
+
+    video.addEventListener('ended', irProximaMidia);
+
+    if(botaoNext){
+      botaoNext.addEventListener('click', function(e){
+        e.stopPropagation();
+        irProximaMidia();
+      });
+    }
+    if(botaoPrev){
+      botaoPrev.addEventListener('click', function(e){
+        e.stopPropagation();
+        irMidiaAnterior();
+      });
+    }
+
+    var jaIniciou = false;
+    var observadorCarrossel = new IntersectionObserver(function(entradas){
+      entradas.forEach(function(entrada){
+        if(entrada.isIntersecting && !jaIniciou){
+          jaIniciou = true;
+          mostrarMidia(0);
+          observadorCarrossel.disconnect();
+        }
+      });
+    }, { threshold: 0.35 });
+
+    var carrosselEl = document.getElementById('productCarousel');
+    if(carrosselEl){
+      observadorCarrossel.observe(carrosselEl);
+    }
+  }
+  document.addEventListener('DOMContentLoaded', iniciarMidiaProduto1);
+
   function alternarTema(){
     var atual = document.documentElement.getAttribute('data-theme');
     var novo = atual === 'dark' ? 'light' : 'dark';
